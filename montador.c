@@ -100,6 +100,8 @@ int main(){
     int i,linhas;
     char lin[20];
     FILE *ASM, *OPC;
+    
+    //commit
 
     if ((ASM = fopen("teste2.asm","rt")) == NULL)    {
         printf("\nErro ao abrir o arquivo original.\n\n");
