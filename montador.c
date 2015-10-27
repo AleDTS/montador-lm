@@ -2,116 +2,168 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
+typedef struct
+{
     char rot[10];
     char mn[4];
     int ope1,ope2;
     char coment[30];
 } LINHA;
 
-typedef struct{
-    char rot[10];
+typedef struct
+{
+    char equ[10];
     int valor;
+} EQU;
+
+typedef struct
+{
+    char rot[10];
+    int lin;
 } ROTULO;
+
+EQU eq[10];
 
 ROTULO rotulo[10];
 
 LINHA linha[50];
 
-void printaCodigo(FILE *cod, int n){
+void printaCodigo(FILE *cod, int n)
+{
     char texto[n+1];
-    while(fgets(texto,n,cod)){
+    while(fgets(texto,n,cod))
+    {
         printf("%s",texto);
+
     }
 }
 
-void leCodigo(FILE *cod,FILE *ling){
-    char ch,aux[20],c;
-    int i=0,l=0;
-    while(!feof(cod)){
-        ch=fgetc(cod);
-        if(!feof(cod)){
-            for(i=0;(ch!=' ' && ch!=10&& ch!=',' && ch!=';');i++){
-                aux[i]=ch;
-                aux[i+1]='\0';
-                ch=fgetc(cod);
-                if(ch==10)l++;
-                if(feof(cod)) break;
+void converte(char aux[], FILE *ling,int lin)
+{
+    int i=0;
+    char rot[10];
+
+}
+
+int rotulos(FILE *cod)
+{
+    int max=20,l=0,j=0,k=0;
+    int temEQU=0;
+    char *aux;
+    char quebra[]=" \n",lin[max],valor[4];
+    long int pos=0;
+
+    while(!feof(cod))
+    {
+        fgets(lin,max,cod);
+        aux=strtok(lin,quebra);
+        temEQU=0;
+        while(aux!= NULL)
+        {
+            if(!strcmp(aux,"EQU"))
+            {
+                strcpy(eq[j].equ,lin);
+                aux=strtok(NULL,quebra);
+                eq[j].valor=atoi(aux);
+                temEQU=1;
+                j++;
             }
-
-            printf("%d %s\n",strlen(aux),aux);
-
-
+            //printf("%s\n",aux);
+            aux=strtok(NULL,quebra);
+        }
+        if(!temEQU)
+        {
+            l+=2;
+            aux=strtok(lin,"\n");
+            while(aux!= NULL)
+            {
+                //
+                if(!strcmp(aux,"MOV")) break;
+                else if(!strcmp(aux,"ADD")) break;
+                else if(!strcmp(aux,"SUB")) break;
+                else if(!strcmp(aux,"CMP")) break;
+                else if(!strcmp(aux,"JMP")) break;
+                else if(!strcmp(aux,"JC")) break;
+                else if(!strcmp(aux,"JNC")) break;
+                else if(!strcmp(aux,"JZ")) break;
+                else if(!strcmp(aux,"JNZ")) break;
+                else if(!strcmp(aux,"JBE")) break;
+                else if(!strcmp(aux,"JA")) break;
+                else if(!strcmp(aux,"CALL")) break;
+                else if(!strcmp(aux,"RET")) break;
+                else if(!strcmp(aux,"HLT")) break;
+                else
+                {
+                    //printf("%d %d %s\n",j,l,aux);
+                    strcpy(rotulo[k].rot,aux);
+                    rotulo[k].lin=l;
+                    k++;
+                }
+                aux=strtok(NULL,"\n");
+            }
         }
     }
-    return;
 }
 
-int rotulos(FILE *cod){
-    char ch,aux[4],valor[4];
-    int i=0,j,l=0,pos=0;
-    int fimCabecalho=0,temRotulo=0;
+void leCodigo(FILE *cod,FILE *ling)
+{
+    int max=30,l=0;
+    char lin[max], *aux, quebra[]=" \n", mne[]="],\n;";
 
-    while(!fimCabecalho){
+    while(!feof(cod))
+    {
+        fgets(lin,max,cod);
+        aux=strtok(lin,quebra);
+        while(aux!= NULL)
+        {
+            //printf("%s\n",aux);
+            if(!strcmp(lin,"MOV"))
+            {
+                strcpy(linha[l].mn,lin);
+                aux=strtok(lin,mne);
+                printf("%s\n",aux);
+            }
 
-            do{
-                ch=fgetc(cod);
-                rotulo[l].rot[i]=ch;
-                i++;
-                rotulo[l].rot[i]='\0';
 
-                if(ch==' '){
-                    ch=fgetc(cod);
-                    for(j=0;j<3;j++){
-                        aux[j]=ch;
-                        ch=fgetc(cod);
-                    }
-
-                    aux[3]='\0';
-
-                    if (!strcmp(aux,"EQU")){
-                        temRotulo=1;
-                        rotulo[l].rot[i-1]='\0';
-                        for(j=0;j<4&&(ch=getc(cod))>=48&&ch<=57;j++)
-                            valor[j]=ch;
-                        rotulo[l].valor=atoi(valor);
-                        //printf("%s %d\n",rotulo[l].rot,rotulo[l].valor);
-                    }
-                    else fimCabecalho=1;
-                }
-            }while(ch!=10);
-
-            if (ch==10) l++;
-            i=0;
+            aux=strtok(NULL,quebra);
+        }
+        printf("\n");
+        l++;
     }
-    return l;
 }
 
-int main(){
+int main()
+{
     int i;
+    char lin[20];
     FILE *ASM, *OPC;
 
-    if ((ASM = fopen("teste2.asm","rt")) == NULL) {
+    if ((ASM = fopen("teste2.asm","rt")) == NULL)
+    {
         printf("\nErro ao abrir o arquivo original.\n\n");
         exit(1);
     }
 
-    if ((OPC = fopen("teste1.opc","w+t")) == NULL) {
+    if ((OPC = fopen("teste1.opc","w+t")) == NULL)
+    {
         printf("\nErro ao abrir o arquivo original.\n\n");
         exit(1);
     }
-
-    //printf("%d",linhas(ASM));
 
     rotulos(ASM);
 
-    fseek(ASM,0,SEEK_SET);
+    //fgets(lin,21,ASM);
+    //printf("%s\n",lin);
 
-    leCodigo(ASM,OPC);
+    //fseek(ASM,0,SEEK_SET);
 
-    for(i=0;i<20;i+=2)
-    //printf("%s %d\n",rotulo[i].rot,rotulo[i].valor);
-    printf("%d [%s]\t[%s [%s[, %s]]][;%s]\n",i, linha[i].rot, linha[i].mn, linha[i].ope1, linha[i].ope2, linha[i].coment);
+    //leCodigo(ASM,OPC);
+
+    for(i=0; i<5; i++)
+        printf("%s %d\n",eq[i].equ,eq[i].valor);
+    for(i=0; i<5; i++)
+        printf("%s %d\n",rotulo[i].rot,rotulo[i].lin);
+    //printf("%d [%s]\t[%s [%s[, %s]]][;%s]\n",i, linha[i].rot, linha[i].mn, linha[i].ope1, linha[i].ope2, linha[i].coment);
 
 
     fclose(ASM);
