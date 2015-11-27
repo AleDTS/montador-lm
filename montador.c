@@ -17,10 +17,11 @@ int rotulos(FILE *cod){
     int max=20,l=0,j=0,k=0;
     int temEQU=0, linhas=0;
     char *aux;
-    char quebra[]=" \n",lin[max],valor[4];
+    char quebra[]=" \n\t;[],",lin[max],valor[4];
 
     while(!feof(cod))    {
         fgets(lin,max,cod); //LE LINHA
+
         aux=strtok(lin,quebra); //QUEBRA LINHA quando encontrar quebra[]
         temEQU=0;
 
@@ -28,19 +29,23 @@ int rotulos(FILE *cod){
             if(!strcmp(aux,"EQU")){
                 strcpy(linha[j].rot,lin);
                 aux=strtok(NULL,quebra);
+                printf("\n%s\n",aux);
                 linha[j].valor=atoi(aux);
-                strcpy(linha[k+j].mn,"xxx");
-                strcpy(linha[k+j].ope1,"xxx");
-                strcpy(linha[k+j].ope2,"xxx");
+                strcpy(linha[j].mn,"xxx");
+                strcpy(linha[j].ope1,"xxx");
+                strcpy(linha[j].ope2,"xxx");
                 temEQU=1;
                 j++;
                 linhas++;
             }
+
             aux=strtok(NULL,quebra);
+
+
         }
 
         if(!temEQU){ //SE NAO TEM EQU, PROCURA ROTULO
-            aux=strtok(lin,"\n");
+            aux=strtok(lin,quebra);
             while(aux!= NULL){
                 if(!strcmp(aux,"MOV")) break;
                 else if(!strcmp(aux,"ADD")) break;
@@ -56,6 +61,7 @@ int rotulos(FILE *cod){
                 else if(!strcmp(aux,"CALL")) break;
                 else if(!strcmp(aux,"RET")) break;
                 else if(!strcmp(aux,"HLT")) break;
+                else if(!strcmp(aux,"INC")) break;
                 else{ //ROTULO
                     strcpy(linha[k+j].rot,aux);
                     strcpy(linha[k+j].mn,"xxx");
@@ -96,14 +102,17 @@ void leCodigo(FILE *cod,FILE *ling){
     }
 }
 
+
+
 int main(){
     int i,linhas;
     char lin[20];
+    char nome[20];
     FILE *ASM, *OPC;
-    
-    //commit
 
-    if ((ASM = fopen("teste2.asm","rt")) == NULL)    {
+    gets(nome);
+
+    if ((ASM = fopen(nome,"rt")) == NULL)    {
         printf("\nErro ao abrir o arquivo original.\n\n");
         exit(1);
     }
@@ -113,13 +122,13 @@ int main(){
         exit(1);
     }
 
-    linhas=rotulos(ASM);
+    printf("\n%d\n",linhas=rotulos(ASM));
 
-    printf("VALOR\tROTULO\tMNE\tOP 1\tOP 2\t\tCOMENTARIO\n\n");
+    printf("\nVALOR\tROTULO\t\tMNE\tOP 1\tOP 2\n");
     for(i=0; i<linhas; i++)
-        printf("[%d]\t[%s]\t[%s\t[%s\t[, %s]]]\t[;%s]\n",
+        printf("[%d]\t[%s\t]\t[%s\t[%s\t[, %s]]]\n",
         linha[i].valor, linha[i].rot, linha[i].mn,
-        linha[i].ope1, linha[i].ope2, linha[i].coment);
+        linha[i].ope1, linha[i].ope2);
 
     fclose(ASM);
     fclose(OPC);
