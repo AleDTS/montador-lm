@@ -116,6 +116,7 @@ int rotulos(FILE *cod){
                     break;
             }
 
+            //OPA
 
 
             else if (strstr(mnemonicos,aux)==NULL){
