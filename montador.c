@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define EQU 0
+#define ROT 1
 
 typedef struct{
     int valor;
@@ -8,12 +10,11 @@ typedef struct{
     char mn[4];
     char ope1[4];
     char ope2[4];
-    char coment[30];
 } LINHA;
 
 LINHA linha[50];
 
-int rotulos(FILE *cod){
+int Rotulos(FILE *cod){
     int max=20,l=0,j=0,k=0;
     int temEQU=0, linhas=0;
     char *aux;
@@ -79,27 +80,128 @@ int rotulos(FILE *cod){
     return (linhas);
 }
 
-void leCodigo(FILE *cod,FILE *ling){
-    int max=30,l=0;
-    char lin[max], *aux, quebra[]=" \n", mne[]="],\n;";
+int rotulos(FILE *cod){
+    int max=20,l=0,j=0,k=0;
+    int temEQU=0, bytes=0,linhas=0,rots=0,temROT;
+    char *aux,*pont;
+    char quebra[]=" \t;[],\n",lin[max];
+    char comandos[]="/A/B/MOV/ADD/SUB/CMP/JMP/JC/JNC/JZ/JNZ/JBE/JA/CALL/RET/HLT/INC/EQU/";
 
+    //if(strstr(comandos,"/");
+    //printf("%s",pont);
     while(!feof(cod))    {
-        fgets(lin,max,cod);
-        aux=strtok(lin,quebra);
-        while(aux!= NULL)        {
-            //printf("%s\n",aux);
-            if(!strcmp(lin,"MOV"))            {
-                strcpy(linha[l].mn,lin);
-                aux=strtok(lin,mne);
+        fgets(lin,max,cod); //LE LINHA
+        aux=strtok(lin,quebra); //QUEBRA LINHA quando encontrar quebra[]
+
+        while(aux!=NULL){
+
+            if(strstr(comandos,aux)==NULL&&strstr(aux,quebra)==NULL){
+                //temROT=1;
                 printf("%s\n",aux);
+
+                if(atoi(aux)!=NULL)
+                    linha[linhas].valor=atoi(aux);
+                else strcpy(linha[linhas].rot,aux);
+
+            }
+            else strcpy(linha[linhas].mn,aux);
+
+
+            aux=strtok(NULL,quebra); //quebra por partes ate o final da linha
+        }
+        //if (temROT) rots++;
+        linhas++;
+    }
+
+/*
+    while(!feof(cod))    {
+        fgets(lin,max,cod); //LE LINHA
+        aux=strtok(lin,quebra); //QUEBRA LINHA quando encontrar quebra[]
+        temROT=0;
+        while(aux!=NULL){
+
+                if(!strcmp(aux,"MOV")) break;
+                else if(!strcmp(aux,"ADD")) break;
+                else if(!strcmp(aux,"SUB")) break;
+                else if(!strcmp(aux,"CMP")) break;
+                else if(!strcmp(aux,"JMP")) break;
+                else if(!strcmp(aux,"JC")) break;
+                else if(!strcmp(aux,"JNC")) break;
+                else if(!strcmp(aux,"JZ")) break;
+                else if(!strcmp(aux,"JNZ")) break;
+                else if(!strcmp(aux,"JBE")) break;
+                else if(!strcmp(aux,"JA")) break;
+                else if(!strcmp(aux,"CALL")) break;
+                else if(!strcmp(aux,"RET")) break;
+                else if(!strcmp(aux,"HLT")) break;
+                else if(!strcmp(aux,"INC")) break;
+                else if(strcmp(aux,"EQU"))  {
+                    temROT=1;
+                    linha[rots].valor=atoi(aux);
+                    //printf("%s\n",aux);
+                    if(atoi(aux)==NULL)
+                        strcpy(linha[rots].rot,aux);
+                }
+
+            //printf("%s",aux);
+            aux=strtok(NULL,quebra); //quebra por partes ate o final da linha
+            linhas++;
+        }
+        if (temROT) rots++;
+    }
+*/
+        /*while(aux!= NULL){ //PROCURA EQU
+            if(!strcmp(aux,"EQU")){
+                strcpy(linha[j].rot,lin);
+                aux=strtok(NULL,quebra);
+                printf("\n%s\n",aux);
+                linha[j].valor=atoi(aux);
+                strcpy(linha[j].mn,"xxx");
+                strcpy(linha[j].ope1,"xxx");
+                strcpy(linha[j].ope2,"xxx");
+                temEQU=1;
+                j++;
+                linhas++;
             }
 
-
             aux=strtok(NULL,quebra);
+
+
         }
-        printf("\n");
-        l++;
-    }
+
+        if(!temEQU){ //SE NAO TEM EQU, PROCURA ROTULO
+            aux=strtok(lin,quebra);
+            while(aux!= NULL){
+                if(!strcmp(aux,"MOV")) break;
+                else if(!strcmp(aux,"ADD")) break;
+                else if(!strcmp(aux,"SUB")) break;
+                else if(!strcmp(aux,"CMP")) break;
+                else if(!strcmp(aux,"JMP")) break;
+                else if(!strcmp(aux,"JC")) break;
+                else if(!strcmp(aux,"JNC")) break;
+                else if(!strcmp(aux,"JZ")) break;
+                else if(!strcmp(aux,"JNZ")) break;
+                else if(!strcmp(aux,"JBE")) break;
+                else if(!strcmp(aux,"JA")) break;
+                else if(!strcmp(aux,"CALL")) break;
+                else if(!strcmp(aux,"RET")) break;
+                else if(!strcmp(aux,"HLT")) break;
+                else if(!strcmp(aux,"INC")) break;
+                else{ //ROTULO
+                    strcpy(linha[k+j].rot,aux);
+                    strcpy(linha[k+j].mn,"xxx");
+                    strcpy(linha[k+j].ope1,"xxx");
+                    strcpy(linha[k+j].ope2,"xxx");
+                    linha[k+j].valor=l;
+                    k++;
+                    linhas++;
+                }
+                aux=strtok(NULL,"\n");
+            }
+            l+=2;
+        }
+    }*/
+    return (linhas);
 }
 
 
