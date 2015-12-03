@@ -211,7 +211,7 @@ int criaCodigo(int linhas, int rotulos, FILE *opcode){ //CRIA ARQUIVO DE SAIDA (
                         byte[j]=valorRotulo(ope[j],rotulos); //BYTE RECEBE O VALOR RELATIVO AO ROTULO
                         if (byte[j]<0){ //SE O ROTULO NAO FOI DECLARADO
                             sucesso=0;
-                            printf("\n\nErro na linha %d, rotulo \"%s\" nao econtrado!\n",i,ope[j]);
+                            printf("\nErro na linha %d, rotulo \"%s\" nao econtrado!\n",i,ope[j]);
                         }
                         //printf("%s - %d\n",ope[j],byte[j]);
                     }
@@ -380,6 +380,11 @@ int main(int argc, char *nome[]){
     int linhas,rotulos;
     FILE *ASM, *OPC;
 
+    if (argc!=3){
+        printf("\nUtilize ./montador <nome_entrada> <nome_saida>\n");
+        exit(1);
+    }
+
     if ((ASM = fopen(nome[1],"rt")) == NULL)    {
         printf("\nNao foi possivel achar o arquivo.\n\n");
         exit(1);
@@ -393,10 +398,14 @@ int main(int argc, char *nome[]){
     linhas=rotulaCodigo(ASM);
     rotulos=vetorRotulos(linhas);
     imprimeRotulos(rotulos);
-    imprimeLinhas(linhas);
-    if(!criaCodigo(linhas,rotulos,OPC))
+    //imprimeLinhas(linhas);
+    if(!criaCodigo(linhas,rotulos,OPC)){
         remove(nome[2]);
+        printf("\nO arquivo %s foi removido\n",nome[2]);
+    }
+    else printf("Arquivo \"%s\" gerado com sucesso!\n",nome[2]);
 
     fclose(ASM);
     fclose(OPC);
+    exit(1);
 }
