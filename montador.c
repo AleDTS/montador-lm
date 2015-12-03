@@ -19,12 +19,12 @@ typedef struct{ //STRUCT DE ROTULOS
 LINHA linha[100];
 ROTULO rotulo[20];
 
-void maiuscula(char *str){ //STRING -> MAIUSCULA
+void maiuscula(char *str){
     char aux[strlen(str)+1],ch;
     int i;
 
     for(i=0;i<strlen(str);i++){
-        aux[i]=toupper(str[i]);
+        aux[i]=str[i];
         if (str[i]=='\n') {
             aux[i]=='\0';
             break;
@@ -100,7 +100,7 @@ int rotulaCodigo(FILE *cod){ //RETORNA No DE LINHAS, FUNCAO SEPARA COMANDOS NA S
     //printf("%s\n",aux);
     while(!feof(cod))    {
         fgets(lin,max,cod); //LE LINHA
-        maiuscula(lin);
+        //maiuscula(lin);
 
         if(strlen(lin)>1){
             aux=strtok(lin,quebra); //QUEBRA LINHA quando encontrar quebra[]
@@ -134,31 +134,32 @@ int rotulaCodigo(FILE *cod){ //RETORNA No DE LINHAS, FUNCAO SEPARA COMANDOS NA S
 
                     //COPIA MNEMONICO E QUEBRA AUX
                     strcpy(linha[l].mn,aux);
+                    //printf("%s\n",linha[l].mn);
                     aux=strtok(NULL,quebra);
 
-                    //printf("%s",linha[l].mn);
+
+                    if(strstr(umByte,linha[l].mn)!=NULL) //1 BYTE
+                        bytes=1;
+                    else if(strstr(doisBytes,linha[l].mn)!=NULL && !temB) //2 BYTES
+                        bytes=2;
+                    
+                    //printf("%s %d\n",linha[l].mn,bytes);
 
                     while(aux!=NULL){ //ENQUANTO NAO EH FINAL DA LINHA
-                        //printf("%s\n",aux);
+                        ///printf("%s\n",aux);
+                        //printf("%s\n",linha[l].mn);
 
                         if(strstr(aux,";")!=NULL){ //CHECA COMENTARIO ;
                             aux[strlen(aux)-1]='\0';
                             linhaComentada=1;
                         }
 
+                        if (!strcmp("B",aux) || !strcmp("[B]",aux)){ //SE TEM B OU [B], 1 BYTE
+                            bytes=1;
+                            temB=1;
+                        }
                              strcpy(linha[l].ope[rot],aux);
                              //printf("\t%s\t(%d)",linha[l].ope[rot],rot);
-
-                            if (!strcmp("B",aux) || !strcmp("[B]",aux)){ //SE TEM B OU [B], 1 BYTE
-                                bytes=1;
-                                temB=1;
-                            }
-                            if(strstr(umByte,linha[l].mn)!=NULL) //SE NAO, 2 BYTES
-                                bytes=1;
-                            if(strstr(doisBytes,linha[l].mn)!=NULL && !temB)
-                                bytes=2;
-
-                        linha[l].bytes=bytes;
 
                         rot++;
                         if (!linhaComentada)
@@ -166,6 +167,7 @@ int rotulaCodigo(FILE *cod){ //RETORNA No DE LINHAS, FUNCAO SEPARA COMANDOS NA S
                             //printf("%s %d",aux,i);
                         else break;
                     }
+                    linha[l].bytes=bytes;
                     totalBytes+=bytes;
                     //printf(" %d\n",bytes);
                     break;
@@ -391,7 +393,7 @@ int main(int argc, char *nome[]){
     linhas=rotulaCodigo(ASM);
     rotulos=vetorRotulos(linhas);
     imprimeRotulos(rotulos);
-    //imprimeLinhas(linhas);
+    imprimeLinhas(linhas);
     if(!criaCodigo(linhas,rotulos,OPC))
         remove(nome[2]);
 
