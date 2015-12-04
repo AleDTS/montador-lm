@@ -20,11 +20,12 @@ LINHA linha[100];
 ROTULO rotulo[20];
 
 void maiuscula(char *str){
-    char aux[strlen(str)+1],ch;
-    int i;
+    char aux[strlen(str)+1];
+    int i,ch;
 
     for(i=0;i<strlen(str);i++){
-        aux[i]=str[i];
+        //ch=str[i];
+        //aux[i]=toupper(ch);
         if (str[i]=='\n') {
             aux[i]=='\0';
             break;
@@ -142,7 +143,7 @@ int rotulaCodigo(FILE *cod){ //RETORNA No DE LINHAS, FUNCAO SEPARA COMANDOS NA S
                         bytes=1;
                     else if(strstr(doisBytes,linha[l].mn)!=NULL && !temB) //2 BYTES
                         bytes=2;
-                    
+
                     //printf("%s %d\n",linha[l].mn,bytes);
 
                     while(aux!=NULL){ //ENQUANTO NAO EH FINAL DA LINHA
