@@ -21,11 +21,10 @@ ROTULO rotulo[20];
 
 void maiuscula(char *str){
     char aux[strlen(str)+1];
-    int i,ch;
+    int i;
 
     for(i=0;i<strlen(str);i++){
-        //ch=str[i];
-        //aux[i]=toupper(ch);
+        aux[i]=toupper(str[i]);
         if (str[i]=='\n') {
             aux[i]=='\0';
             break;
@@ -101,7 +100,7 @@ int rotulaCodigo(FILE *cod){ //RETORNA No DE LINHAS, FUNCAO SEPARA COMANDOS NA S
     //printf("%s\n",aux);
     while(!feof(cod))    {
         fgets(lin,max,cod); //LE LINHA
-        //maiuscula(lin);
+        maiuscula(lin);
 
         if(strlen(lin)>1){
             aux=strtok(lin,quebra); //QUEBRA LINHA quando encontrar quebra[]
