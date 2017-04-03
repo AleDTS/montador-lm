@@ -146,7 +146,7 @@ int rotulaCodigo(FILE *cod){ //RETORNA No DE LINHAS, FUNCAO SEPARA COMANDOS NA S
                     //printf("%s %d\n",linha[l].mn,bytes);
 
                     while(aux!=NULL){ //ENQUANTO NAO EH FINAL DA LINHA
-                        ///printf("%s\n",aux);
+                        //printf("%s\n",aux);
                         //printf("%s\n",linha[l].mn);
 
                         if(strstr(aux,";")!=NULL){ //CHECA COMENTARIO ;

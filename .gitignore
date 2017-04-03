@@ -1,0 +1,15 @@
+*.asm
+
+*.opc
+
+*.o
+
+Trabalho1.pdf
+
+*.0
+
+*~
+
+old/
+
+*.exe
